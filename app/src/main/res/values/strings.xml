@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">League</string>
+    <string name="add_league">Add League</string>
+    <string name="add_team">Add Team</string>
+    <string name="schedule_matches">Schedule Matches</string>
+    <string name="delete_league">Delete</string>
+    <string name="delete">DELETE</string>
+    <string name="league_name_hint">League Name</string>
+    <string name="add_logo">Add Logo</string>
+    <string name="divider">-</string>
+    <string name="vs">vs</string>
+    <string name="noLeagues">You don\'t have any Leagues</string>
+    <string name="noTeams">You don\'t have any Teams</string>
+</resources>
