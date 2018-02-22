@@ -16,6 +16,8 @@ import android.text.InputType;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -23,6 +25,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.sprigs.league.ApiEndpointInterface;
 import com.sprigs.league.R;
 import com.sprigs.league.adapters.LeagueAdapter;
 import com.sprigs.league.helpers.DatabaseHelper;
@@ -31,21 +36,25 @@ import com.sprigs.league.models.League;
 import java.util.ArrayList;
 import java.util.List;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+
 public class AddLeaguesActivity extends AppCompatActivity {
 
     public static final int PICK_IMAGE = 1;
-    public RecyclerView leaguesRecyclerView;
-    public LeagueAdapter leagueAdapter;
-    public List<League> leagueList;
+    RecyclerView leaguesRecyclerView;
+    LeagueAdapter leagueAdapter;
+    List<League> leagueList;
+    ArrayList<League> leaguesFromApi;
     League league;
-    String leagueName = "";
     FloatingActionButton addLeagueFab;
-    public TextView noLeagues;
-    public ImageView logo;
+    TextView noLeagues;
+    ImageView logo;
     DatabaseHelper databaseHelper;
     String logoPath;
-    int leagueId;
-    int leagueState;
     int checkForPic = 0;
 
     @Override
@@ -69,6 +78,31 @@ public class AddLeaguesActivity extends AppCompatActivity {
             }
         });
 
+        Gson gson = new GsonBuilder()
+                .setLenient()
+                .create();
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("http://api.football-data.org")
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .build();
+
+        ApiEndpointInterface apiEndpoint = retrofit.create(ApiEndpointInterface.class);
+
+        final Call<List<League>> leagues = apiEndpoint.getLeagues();
+
+        leagues.enqueue(new Callback<List<League>>(){
+            @Override
+            public void onResponse(Call<List<League>> call, Response<List<League>> response) {
+                leaguesFromApi.addAll(response.body());
+            }
+
+            @Override
+            public void onFailure(Call<List<League>> call, Throwable t) {
+                Toast.makeText(AddLeaguesActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
+            }
+        });
+
         leaguesRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
@@ -79,6 +113,7 @@ public class AddLeaguesActivity extends AppCompatActivity {
             }
         });
 
+        leaguesFromApi = new ArrayList<>();
         leagueList = databaseHelper.getAllLeagues();
         leagueAdapter = new LeagueAdapter(this, leagueList, new LeagueAdapter.LeagueAdapterListener() {
             @Override
@@ -100,6 +135,8 @@ public class AddLeaguesActivity extends AppCompatActivity {
     }
 
 
+
+
     private void setGridLayout() {
         RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(this, 2);
         leaguesRecyclerView.setLayoutManager(mLayoutManager);
@@ -112,8 +149,16 @@ public class AddLeaguesActivity extends AppCompatActivity {
         LayoutInflater inflater = getLayoutInflater();
         View alertLayout = inflater.inflate(R.layout.layout_custom_dialog, null);
 
-        final EditText leagueNameInput = alertLayout.findViewById(R.id.leagueName);
+        final AutoCompleteTextView leagueNameInput = alertLayout.findViewById(R.id.leagueName);
         final Button addLogo = alertLayout.findViewById(R.id.addLogo);
+
+        ArrayList leagues = new ArrayList();
+        for (int i = 0; i <leaguesFromApi.size() ; i++) {
+            leagues.add(leaguesFromApi.get(i).getLeagueName());
+        }
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1, leagues);
+        leagueNameInput.setAdapter(adapter);
 
         leagueNameInput.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
         logo = alertLayout.findViewById(R.id.logo);

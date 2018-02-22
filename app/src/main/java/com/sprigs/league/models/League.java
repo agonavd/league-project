@@ -1,9 +1,12 @@
 package com.sprigs.league.models;
 
 
+import com.google.gson.annotations.SerializedName;
+
 public class League {
     private int id;
     private int leagueState;
+    @SerializedName("caption")
     private String leagueName;
     private int numberOfTeams;
     private String leagueLogo;

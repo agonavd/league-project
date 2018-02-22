@@ -1,5 +1,6 @@
 package com.sprigs.league.activities;
 
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -60,7 +61,6 @@ public class LeagueResultsActivity extends AppCompatActivity implements Serializ
                     matches.clear();
                     matches.addAll(databaseHelper.getAllMatches(leagueId));
                     resultsAdapter.notifyDataSetChanged();
-
                     i++;
                     if (i < matches.size()) {
                         handler.postDelayed(this, delay);

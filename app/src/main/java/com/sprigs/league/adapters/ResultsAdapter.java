@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.sprigs.league.R;
@@ -27,7 +28,6 @@ public class ResultsAdapter extends RecyclerView.Adapter<ResultsAdapter.MyViewHo
         private ProgressBar homeProgressBar;
         private ProgressBar awayProgressBar;
         private TextView homeTeam, awayTeam, homeTeamScore, awayTeamScore;
-        private CardView cardView;
 
         public MyViewHolder(View itemView) {
             super(itemView);
@@ -37,7 +37,6 @@ public class ResultsAdapter extends RecyclerView.Adapter<ResultsAdapter.MyViewHo
             this.awayTeamScore = itemView.findViewById(R.id.awayTeamScore);
             this.homeProgressBar = itemView.findViewById(R.id.homeProgressBar);
             this.awayProgressBar = itemView.findViewById(R.id.awayProgressBar);
-            this.cardView = itemView.findViewById(R.id.card_view);
         }
     }
 
@@ -63,8 +62,6 @@ public class ResultsAdapter extends RecyclerView.Adapter<ResultsAdapter.MyViewHo
         TextView awayTeamScore = holder.awayTeamScore;
         ProgressBar homeProgressBar = holder.homeProgressBar;
         ProgressBar awayProgressBar = holder.awayProgressBar;
-        CardView cardView = holder.cardView;
-
         homeTeam.setText(matches.get(position).getHomeTeam());
         awayTeam.setText(matches.get(position).getAwayTeam());
 
