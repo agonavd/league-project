@@ -16,6 +16,7 @@ import android.text.InputType;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -36,6 +37,9 @@ import com.sprigs.league.models.League;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -45,13 +49,16 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class AddLeaguesActivity extends AppCompatActivity {
 
     public static final int PICK_IMAGE = 1;
+
+    @BindView(R.id.recycler_view)
     RecyclerView leaguesRecyclerView;
+
+    @BindView(R.id.addLeagueFab)
+    FloatingActionButton addLeagueFab;
+
     LeagueAdapter leagueAdapter;
     List<League> leagueList;
     ArrayList<League> leaguesFromApi;
-    League league;
-    FloatingActionButton addLeagueFab;
-    TextView noLeagues;
     ImageView logo;
     DatabaseHelper databaseHelper;
     String logoPath;
@@ -61,22 +68,9 @@ public class AddLeaguesActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        league = new League();
+        ButterKnife.bind(this);
+
         databaseHelper = new DatabaseHelper(AddLeaguesActivity.this);
-
-        leaguesRecyclerView = findViewById(R.id.recycler_view);
-        noLeagues = findViewById(R.id.noLeagues);
-
-        leaguesRecyclerView.setVisibility(View.VISIBLE);
-        noLeagues.setVisibility(View.GONE);
-
-        addLeagueFab = findViewById(R.id.addLeagueFab);
-        addLeagueFab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showAlertDialog();
-            }
-        });
 
         Gson gson = new GsonBuilder()
                 .setLenient()
@@ -130,12 +124,13 @@ public class AddLeaguesActivity extends AppCompatActivity {
             }
         });
 
-
         setGridLayout();
     }
 
-
-
+    @OnClick(R.id.addLeagueFab)
+    public void addLeagueButtonClicked() {
+        showAlertDialog();
+    }
 
     private void setGridLayout() {
         RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(this, 2);
@@ -159,6 +154,13 @@ public class AddLeaguesActivity extends AppCompatActivity {
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1, leagues);
         leagueNameInput.setAdapter(adapter);
+
+        leagueNameInput.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+
+            }
+        });
 
         leagueNameInput.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
         logo = alertLayout.findViewById(R.id.logo);
@@ -206,7 +208,6 @@ public class AddLeaguesActivity extends AppCompatActivity {
                 leagueList.addAll(databaseHelper.getAllLeagues());
                 leagueAdapter.notifyDataSetChanged();
                 leaguesRecyclerView.setVisibility(View.VISIBLE);
-                noLeagues.setVisibility(View.GONE);
             }
         });
 

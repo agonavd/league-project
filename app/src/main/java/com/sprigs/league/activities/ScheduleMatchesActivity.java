@@ -17,11 +17,15 @@ import com.sprigs.league.models.Team;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+
 public class ScheduleMatchesActivity extends AppCompatActivity {
 
+    @BindView(R.id.matchesList)
     RecyclerView matchesList;
-    android.support.design.widget.FloatingActionButton startLeagueButton;
-    League league;
+
     List<Match> matches;
     SchedulesAdapter resultsAdapter;
     DatabaseHelper databaseHelper;
@@ -32,30 +36,27 @@ public class ScheduleMatchesActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_schedule_matches);
-        league = new League();
+        ButterKnife.bind(this);
         Intent intent = getIntent();
         leaguePosition = intent.getIntExtra("leaguePosition", 0);
+
         databaseHelper = new DatabaseHelper(ScheduleMatchesActivity.this);
         leagueId = databaseHelper.getAllLeagues().get(leaguePosition).getId();
+
         scheduleMatches();
+
         matches = databaseHelper.getAllMatches(leagueId);
-
-        matchesList = findViewById(R.id.matchesList);
-        startLeagueButton = findViewById(R.id.startLeagueButton);
-
         matchesList.setHasFixedSize(true);
         resultsAdapter = new SchedulesAdapter(matches);
 
         setLinearLayout();
+    }
 
-        startLeagueButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(ScheduleMatchesActivity.this, LeagueResultsActivity.class);
-                intent.putExtra("leaguePosition", leaguePosition);
-                startActivity(intent);
-            }
-        });
+    @OnClick(R.id.startLeagueButton)
+    public void starLeagueButtonClicked() {
+        Intent intent = new Intent(ScheduleMatchesActivity.this, LeagueResultsActivity.class);
+        intent.putExtra("leaguePosition", leaguePosition);
+        startActivity(intent);
     }
 
     @Override

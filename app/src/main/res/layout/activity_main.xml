@@ -5,14 +5,6 @@
     android:layout_height="match_parent"
     app:ignore="NamespaceTypo">
 
-    <TextView
-        android:id="@+id/noLeagues"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:textSize="20sp"
-        android:text="@string/noLeagues"/>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_view"

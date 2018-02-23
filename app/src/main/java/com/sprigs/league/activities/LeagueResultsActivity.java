@@ -21,12 +21,15 @@ import com.sprigs.league.models.Match;
 import java.io.Serializable;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class LeagueResultsActivity extends AppCompatActivity implements Serializable {
 
+    @BindView(R.id.resultsList)
     RecyclerView resultsList;
+
     List<Match> matches;
-    League league;
-    Match match;
     Handler handler;
     ResultsAdapter resultsAdapter;
     DatabaseHelper databaseHelper;
@@ -38,15 +41,15 @@ public class LeagueResultsActivity extends AppCompatActivity implements Serializ
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_league_results);
+        ButterKnife.bind(this);
+
         Intent intent = getIntent();
         leaguePosition = intent.getIntExtra("leaguePosition", 0);
-        match = new Match();
-        league = new League();
+
         databaseHelper = new DatabaseHelper(LeagueResultsActivity.this);
         leagueId = databaseHelper.getAllLeagues().get(leaguePosition).getId();
         matches = databaseHelper.getAllMatches(leagueId);
 
-        resultsList = findViewById(R.id.resultsList);
         resultsList.setHasFixedSize(true);
         resultsAdapter = new ResultsAdapter(matches);
 

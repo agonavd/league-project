@@ -19,6 +19,9 @@ import android.widget.Toast;
 
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.sprigs.league.ApiEndpointInterface;
 import com.sprigs.league.R;
 import com.sprigs.league.helpers.DatabaseHelper;
 import com.sprigs.league.helpers.RecyclerItemTouchHelper;
@@ -29,70 +32,68 @@ import com.sprigs.league.models.Team;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+import retrofit2.Call;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+
 public class AddTeamsActivity extends AppCompatActivity implements RecyclerItemTouchHelper.RecyclerItemTouchHelperListener {
 
-    private CoordinatorLayout coordinatorLayout;
-    League league;
-    ArrayList<String> teams;
-    String leagueName;
     int leaguePosition;
     int leagueId;
-    TextView noTeams;
+
+    @BindView(R.id.coordinator_layout)
+    CoordinatorLayout coordinatorLayout;
+
+    @BindView(R.id.teamList)
     RecyclerView teamsRecyclerView;
-    AddTeamAdapter addTeamAdapter;
+
+    @BindView(R.id.addTeamFab)
     FloatingActionMenu floatingActionMenu;
+
     FloatingActionButton addTeamButton, scheduleMatchesButton;
     DatabaseHelper databaseHelper;
+    AddTeamAdapter addTeamAdapter;
     List<Team> teamList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.content_main);
+        ButterKnife.bind(this);
         Intent intent = getIntent();
         leaguePosition = intent.getIntExtra("leaguePosition", 0);
         databaseHelper = new DatabaseHelper(AddTeamsActivity.this);
+
         leagueId = databaseHelper.getAllLeagues().get(leaguePosition).getId();
         setTitle(databaseHelper.getAllLeagues().get(leaguePosition).getLeagueName());
-        league = new League();
-        teams = new ArrayList<>();
-
-        coordinatorLayout = findViewById(R.id.coordinator_layout);
-        floatingActionMenu = findViewById(R.id.material_design_android_floating_action_menu);
-        addTeamButton = findViewById(R.id.material_design_floating_action_menu_item1);
-        scheduleMatchesButton = findViewById(R.id.material_design_floating_action_menu_item2);
-        teamsRecyclerView = findViewById(R.id.teamList);
-        noTeams = findViewById(R.id.noTeams);
-
-        noTeams.setVisibility(View.GONE);
 
         teamList = databaseHelper.getAllTeams(leagueId);
         teamsRecyclerView.setHasFixedSize(true);
+
         addTeamAdapter = new AddTeamAdapter(teamList);
         setLinearLayout();
 
         ItemTouchHelper.SimpleCallback itemTouchHelperCallback = new RecyclerItemTouchHelper(0, ItemTouchHelper.LEFT, this);
         new ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(teamsRecyclerView);
+    }
 
-        addTeamButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showAddDialog();
-            }
-        });
+    @OnClick(R.id.addTeam)
+    public void fabButtonClicked() {
+        showAddDialog();
+    }
 
-        scheduleMatchesButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (databaseHelper.getAllTeams(leagueId).size() <= 1) {
-                    Toast.makeText(AddTeamsActivity.this, "Enter More than 1 Team", Toast.LENGTH_SHORT).show();
-                } else {
-                    Intent intent = new Intent(AddTeamsActivity.this, ScheduleMatchesActivity.class);
-                    intent.putExtra("leaguePosition", leaguePosition);
-                    startActivity(intent);
-                }
-            }
-        });
+    @OnClick(R.id.scheduleMatches)
+    public void addTeamButtonClicked() {
+        if (databaseHelper.getAllTeams(leagueId).size() <= 1) {
+            Toast.makeText(AddTeamsActivity.this, "Enter More than 1 Team", Toast.LENGTH_SHORT).show();
+        } else {
+            Intent intent = new Intent(AddTeamsActivity.this, ScheduleMatchesActivity.class);
+            intent.putExtra("leaguePosition", leaguePosition);
+            startActivity(intent);
+        }
     }
 
 
