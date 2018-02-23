@@ -96,9 +96,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         sqLiteDatabase.close();
     }
 
-    public boolean isTeamInList(String teamName) {
+    public boolean isTeamInList(String teamName, int leagueId) {
         SQLiteDatabase db = getWritableDatabase();
-        String selectString = "SELECT * FROM " + TABLE_TEAMS + " WHERE " + KEY_TEAM_NAME + " =?";
+        String selectString = "SELECT * FROM " + TABLE_TEAMS + " WHERE " + KEY_TEAM_LEAGUE_ID + " = " + leagueId + " AND " + KEY_TEAM_NAME + " =?";
 
         Cursor cursor = db.rawQuery(selectString, new String[]{teamName});
 
