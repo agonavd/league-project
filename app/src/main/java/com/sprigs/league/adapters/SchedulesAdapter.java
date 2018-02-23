@@ -13,6 +13,9 @@ import com.sprigs.league.models.Match;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class SchedulesAdapter extends RecyclerView.Adapter<SchedulesAdapter.MyViewHolder> {
 
     private List<Match> matches;
@@ -20,12 +23,15 @@ public class SchedulesAdapter extends RecyclerView.Adapter<SchedulesAdapter.MyVi
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
 
-        private TextView homeTeam, awayTeam;
+        @BindView(R.id.homeTeam)
+        TextView homeTeam;
+
+        @BindView(R.id.awayTeam)
+        TextView awayTeam;
 
         public MyViewHolder(View itemView) {
             super(itemView);
-            this.homeTeam = itemView.findViewById(R.id.homeTeam);
-            this.awayTeam = itemView.findViewById(R.id.awayTeam);
+            ButterKnife.bind(this, itemView);
 
         }
     }

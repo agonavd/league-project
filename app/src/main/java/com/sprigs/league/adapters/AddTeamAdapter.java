@@ -14,20 +14,27 @@ import com.sprigs.league.models.Team;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class AddTeamAdapter extends RecyclerView.Adapter<AddTeamAdapter.MyViewHolder> {
 
     private List<Team> teams;
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
 
+        @BindView(R.id.team)
         TextView textViewName;
-        public RelativeLayout viewBackground, viewForeground;
+
+        @BindView(R.id.view_background)
+        public RelativeLayout viewBackground;
+
+        @BindView(R.id.view_foreground)
+        public RelativeLayout viewForeground;
 
         public MyViewHolder(View itemView) {
             super(itemView);
-            this.textViewName = itemView.findViewById(R.id.team);
-            viewBackground = itemView.findViewById(R.id.view_background);
-            viewForeground = itemView.findViewById(R.id.view_foreground);
+            ButterKnife.bind(this, itemView);
         }
     }
 
@@ -48,8 +55,7 @@ public class AddTeamAdapter extends RecyclerView.Adapter<AddTeamAdapter.MyViewHo
     @Override
     public void onBindViewHolder(final MyViewHolder holder, final int listPosition) {
 
-        TextView textViewName = holder.textViewName;
-        textViewName.setText(teams.get(listPosition).getTeamName());
+        holder.textViewName.setText(teams.get(listPosition).getTeamName());
 
     }
 

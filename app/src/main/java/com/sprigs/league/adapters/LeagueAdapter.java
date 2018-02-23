@@ -24,6 +24,9 @@ import com.sprigs.league.models.League;
 
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 
 public class LeagueAdapter extends RecyclerView.Adapter<LeagueAdapter.MyViewHolder> {
 
@@ -33,19 +36,28 @@ public class LeagueAdapter extends RecyclerView.Adapter<LeagueAdapter.MyViewHold
     private DatabaseHelper databaseHelper;
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
-        public TextView leagueName, numberOfTeams;
-        public ImageView thumbnail, overflow;
-        public CardView cardView;
-        public ProgressBar progressBar;
 
-        public MyViewHolder(View view) {
-            super(view);
-            this.leagueName = view.findViewById(R.id.title);
-            this.numberOfTeams = view.findViewById(R.id.count);
-            this.thumbnail = view.findViewById(R.id.thumbnail);
-            this.overflow = view.findViewById(R.id.overflow);
-            this.cardView = view.findViewById(R.id.card_view);
-            this.progressBar = view.findViewById(R.id.progressBar);
+        @BindView(R.id.title)
+        TextView leagueName;
+
+        @BindView(R.id.count)
+        TextView numberOfTeams;
+
+        @BindView(R.id.thumbnail)
+        ImageView thumbnail;
+
+        @BindView(R.id.overflow)
+        ImageView overflow;
+
+        @BindView(R.id.card_view)
+        CardView cardView;
+
+        @BindView(R.id.progressBar)
+        ProgressBar progressBar;
+
+        public MyViewHolder(View itemView) {
+            super(itemView);
+            ButterKnife.bind(this, itemView);
         }
     }
 

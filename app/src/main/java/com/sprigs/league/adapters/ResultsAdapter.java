@@ -17,6 +17,9 @@ import com.sprigs.league.models.Match;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 import static android.graphics.Color.parseColor;
 
 public class ResultsAdapter extends RecyclerView.Adapter<ResultsAdapter.MyViewHolder> {
@@ -25,18 +28,27 @@ public class ResultsAdapter extends RecyclerView.Adapter<ResultsAdapter.MyViewHo
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
 
-        private ProgressBar homeProgressBar;
-        private ProgressBar awayProgressBar;
-        private TextView homeTeam, awayTeam, homeTeamScore, awayTeamScore;
+        @BindView(R.id.homeProgressBar)
+        ProgressBar homeProgressBar;
+
+        @BindView(R.id.awayProgressBar)
+        ProgressBar awayProgressBar;
+
+        @BindView(R.id.homeTeam)
+        TextView homeTeam;
+
+        @BindView(R.id.awayTeam)
+        TextView awayTeam;
+
+        @BindView(R.id.homeTeamScore)
+        TextView homeTeamScore;
+
+        @BindView(R.id.awayTeamScore)
+        TextView awayTeamScore;
 
         public MyViewHolder(View itemView) {
             super(itemView);
-            this.homeTeam = itemView.findViewById(R.id.homeTeam);
-            this.awayTeam = itemView.findViewById(R.id.awayTeam);
-            this.homeTeamScore = itemView.findViewById(R.id.homeTeamScore);
-            this.awayTeamScore = itemView.findViewById(R.id.awayTeamScore);
-            this.homeProgressBar = itemView.findViewById(R.id.homeProgressBar);
-            this.awayProgressBar = itemView.findViewById(R.id.awayProgressBar);
+            ButterKnife.bind(this, itemView);
         }
     }
 
@@ -56,22 +68,15 @@ public class ResultsAdapter extends RecyclerView.Adapter<ResultsAdapter.MyViewHo
 
     @Override
     public void onBindViewHolder(ResultsAdapter.MyViewHolder holder, int position) {
-        TextView homeTeam = holder.homeTeam;
-        TextView awayTeam = holder.awayTeam;
-        TextView homeTeamScore = holder.homeTeamScore;
-        TextView awayTeamScore = holder.awayTeamScore;
-        ProgressBar homeProgressBar = holder.homeProgressBar;
-        ProgressBar awayProgressBar = holder.awayProgressBar;
-        homeTeam.setText(matches.get(position).getHomeTeam());
-        awayTeam.setText(matches.get(position).getAwayTeam());
+        holder.homeTeam.setText(matches.get(position).getHomeTeam());
+        holder.awayTeam.setText(matches.get(position).getAwayTeam());
 
+        holder.homeTeamScore.setText(matches.get(position).getHomeScore() + "");
+        holder.awayTeamScore.setText(matches.get(position).getAwayScore() + "");
 
-        homeTeamScore.setText(matches.get(position).getHomeScore() + "");
-        awayTeamScore.setText(matches.get(position).getAwayScore() + "");
-
-        if (!homeTeamScore.getText().equals("0")) {
-            homeProgressBar.setVisibility(View.GONE);
-            awayProgressBar.setVisibility(View.GONE);
+        if (!holder.homeTeamScore.getText().equals("0")) {
+            holder.homeProgressBar.setVisibility(View.GONE);
+            holder.awayProgressBar.setVisibility(View.GONE);
         }
     }
 

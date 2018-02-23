@@ -143,7 +143,7 @@ public class AddTeamsActivity extends AppCompatActivity implements RecyclerItemT
                 if (teamName.matches("")) {
                     Toast.makeText(AddTeamsActivity.this, "You did not enter a Team Name", Toast.LENGTH_SHORT).show();
                     return;
-                } else if (databaseHelper.isTeamInList(teamName)) {
+                } else if (databaseHelper.isTeamInList(teamName, leagueId)) {
                     Toast.makeText(AddTeamsActivity.this, "This team is in List", Toast.LENGTH_SHORT).show();
                     return;
                 }
